@@ -30,6 +30,14 @@ jobs:
           - windows-latest
 
     steps:
+      # gofmt treats CRLF line endings as formatting differences. Disable Git's
+      # automatic conversion before checkout so the Windows runner checks out
+      # the same LF bytes as Linux.
+      - name: Configure Git line endings
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+
       - name: Check out source
         uses: actions/checkout@v4
         with:
