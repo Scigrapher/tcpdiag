@@ -182,15 +182,16 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
 
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" dist/* --clobber
+          if gh release view "$TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --repo "$GH_REPO" --clobber
           else
             gh release create "$TAG" dist/* \
+              --repo "$GH_REPO" \
               --title "tcpdiag $TAG" \
-              --generate-notes \
-              --verify-tag
+              --generate-notes
           fi
